@@ -1,4 +1,3 @@
-import wandb
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Dense
 from tensorflow.keras.optimizers import Adam
@@ -10,7 +9,6 @@ from collections import deque
 import random
 
 tf.keras.backend.set_floatx('float64')
-wandb.init(name='DQN', project="deep-rl-tf2")
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gamma', type=float, default=0.95)
@@ -72,7 +70,7 @@ class ActionStateModel:
     def train(self, states, targets):
         self.model.fit(states, targets, epochs=1, verbose=0)
     
-
+total_rewards = []
 class Agent:
     def __init__(self, env):
         self.env = env
@@ -111,7 +109,10 @@ class Agent:
                 self.replay()
             self.target_update()
             print('EP{} EpisodeReward={}'.format(ep, total_reward))
-            wandb.log({'Reward': total_reward})
+            #wandb.log({'Reward': total_reward})
+
+            total_rewards.append(total_reward)
+            print('total_rewards={}'.format(total_rewards))
 
 
 def main():
